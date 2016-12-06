@@ -69,9 +69,8 @@ contents of this register directly by using one of the double-word shift instruc
 <p>The function unit itself is a bit-serial unit. All operations are processed one bit at
 a time, and every instruction requires at least 18 logic cycles in addition to any memory
 accesses.</p>
-</div>
-<div class="section" id="the-condition-register">
-<h2>The Condition Register<a class="headerlink" href="#the-condition-register" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-ConditionReg"></span><div class="section" id="the-condition-register">
+<h3>The Condition Register<a class="headerlink" href="#the-condition-register" title="Permalink to this headline">¶</a></h3>
 <p>The Condition Register hold 7 flag bits.</p>
 <blockquote>
 <div><table border="1" class="docutils">
@@ -137,6 +136,7 @@ within an externally defined time.</td>
 </div></blockquote>
 <p>The &#8216;M&#8217; flag is cleared by a CPU reset, interrupt or execution of the CAL (Call subroutine) instruction.
 It can also be cleared or set explicitly by the user through one of the bit set or clear, rotate or shift instructions.</p>
+</div>
 </div>
 <div class="section" id="memory-space">
 <h2>Memory Space<a class="headerlink" href="#memory-space" title="Permalink to this headline">¶</a></h2>
@@ -283,8 +283,10 @@ second for the jump destination. e.g.</p>
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">The Ferranti F100-L Microprocessor</a><ul>
-<li><a class="reference internal" href="#datapath-registers-and-function-unit">Datapath Registers and Function Unit</a></li>
+<li><a class="reference internal" href="#datapath-registers-and-function-unit">Datapath Registers and Function Unit</a><ul>
 <li><a class="reference internal" href="#the-condition-register">The Condition Register</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#memory-space">Memory Space</a></li>
 <li><a class="reference internal" href="#processor-start-up">Processor Start Up</a></li>
 <li><a class="reference internal" href="#addressing-modes">Addressing Modes</a></li>
