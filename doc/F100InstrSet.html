@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>F100-L Instruction Set &#8212; F100L 0.1 documentation</title>
+    <title>The F100-L Instruction Set &#8212; F100L 0.1 documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -26,6 +26,8 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="top" title="F100L 0.1 documentation" href="../index.html" />
+    <link rel="next" title="The F100-L Assembler" href="F100Asm.html" />
+    <link rel="prev" title="F100-L Microprocessor Architecture" href="F100Arch.html" />
    
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
@@ -38,10 +40,111 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-F100_Opcodes.F100_Opcode">
-<span id="f100-l-instruction-set"></span><h1>F100-L Instruction Set<a class="headerlink" href="#module-F100_Opcodes.F100_Opcode" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="the-f100-l-instruction-set">
+<h1>The F100-L Instruction Set<a class="headerlink" href="#the-f100-l-instruction-set" title="Permalink to this headline">¶</a></h1>
+<p>The following pages present complete descriptions for all instructions implemented in the F100-L.</p>
+<span class="target" id="module-InstructionReg"></span><div class="section" id="instruction-encoding">
+<h2>Instruction Encoding<a class="headerlink" href="#instruction-encoding" title="Permalink to this headline">¶</a></h2>
+<p>All instruction encodings are defined as overlapping but mutually exclusive bit fields.</p>
+<p>The bit fields are defined as follows</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="6%" />
+<col width="15%" />
+<col width="15%" />
+<col width="64%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Field</td>
+<td>Number of bits</td>
+<td>Bit positions</td>
+<td>Comment</td>
+</tr>
+<tr class="row-even"><td>F</td>
+<td>4</td>
+<td>15..12</td>
+<td>Instruction class or function</td>
+</tr>
+<tr class="row-odd"><td>I</td>
+<td>1</td>
+<td>11</td>
+<td>Address Mode</td>
+</tr>
+<tr class="row-even"><td>T</td>
+<td>2</td>
+<td>11,10</td>
+<td>General field to qualify F=0 instructions</td>
+</tr>
+<tr class="row-odd"><td>R</td>
+<td>2</td>
+<td>9,8</td>
+<td>Register field or auto-index mode for indirect addressing</td>
+</tr>
+<tr class="row-even"><td>S</td>
+<td>2</td>
+<td>7,6</td>
+<td>General field to qualify F=0 instructions</td>
+</tr>
+<tr class="row-odd"><td>J</td>
+<td>2</td>
+<td>5,4</td>
+<td>General field to qualify F=0 instructions</td>
+</tr>
+<tr class="row-even"><td>N</td>
+<td>11</td>
+<td>10..0</td>
+<td>Memory address for direct addressing</td>
+</tr>
+<tr class="row-odd"><td>P</td>
+<td>8</td>
+<td>7..0</td>
+<td>Memory address used as pointer for pointer indirect addressing</td>
+</tr>
+<tr class="row-even"><td>B</td>
+<td>4</td>
+<td>3..0</td>
+<td>Shift number or bit significance</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>Where a don&#8217;t care (x) bit is presented in the tables, the assembler will consistently use a &#8216;0&#8217;. The
+emulator will ignore this field during decoding.</p>
+</div>
+<div class="section" id="instruction-timings">
+<h2>Instruction Timings<a class="headerlink" href="#instruction-timings" title="Permalink to this headline">¶</a></h2>
+<p>All instruction timings are defined using the following definitions</p>
+<blockquote>
+<div><ul class="simple">
+<li>Ra1 = Program memory read access time</li>
+<li>Ra2 = Data memory read access time</li>
+<li>Rc1 = Program memory read cycle time</li>
+<li>Rc2 = Data memory read cycle time</li>
+<li>M   = Read-modify-write cycle time</li>
+<li>Wc  = Data memory write cycle time</li>
+<li>L   = 1 Logic cycle time (2x period of the CPU clock input)</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="abbrieviations">
+<h2>Abbrieviations<a class="headerlink" href="#abbrieviations" title="Permalink to this headline">¶</a></h2>
+<p>Definitions</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">N</span>      <span class="mi">11</span> <span class="n">bit</span> <span class="n">memory</span> <span class="n">address</span> <span class="p">(</span><span class="n">associated</span> <span class="k">with</span> <span class="n">opcode</span> <span class="n">field</span> <span class="n">N</span> <span class="n">above</span><span class="p">)</span>
+<span class="n">P</span>       <span class="mi">8</span> <span class="n">bit</span> <span class="n">memory</span> <span class="n">address</span> <span class="p">(</span><span class="n">associated</span> <span class="k">with</span> <span class="n">opcode</span> <span class="n">field</span> <span class="n">P</span> <span class="n">above</span><span class="p">)</span>
+<span class="n">W</span>      <span class="mi">15</span> <span class="n">bit</span> <span class="n">memory</span> <span class="n">address</span>
+<span class="n">D</span>      <span class="mi">16</span> <span class="n">bit</span> <span class="n">immediate</span> <span class="n">data</span>
+<span class="p">(</span><span class="n">N</span><span class="p">)</span>    <span class="n">Contents</span> <span class="n">of</span> <span class="n">memory</span> <span class="n">location</span> <span class="n">N</span>
+<span class="p">(</span><span class="n">P</span><span class="p">)</span>    <span class="n">Contents</span> <span class="n">of</span> <span class="n">memory</span> <span class="n">location</span> <span class="n">P</span>
+<span class="p">(</span><span class="n">W</span><span class="p">)</span>    <span class="n">Contents</span> <span class="n">of</span> <span class="n">memory</span> <span class="n">location</span> <span class="n">W</span>
+<span class="n">PC</span>     <span class="n">Value</span> <span class="n">of</span> <span class="n">the</span> <span class="n">Program</span> <span class="n">Counter</span> <span class="p">(</span><span class="n">when</span> <span class="n">pointing</span> <span class="n">at</span> <span class="n">the</span> <span class="n">opcode</span> <span class="n">word</span><span class="p">)</span>
+<span class="p">(</span><span class="n">PC</span><span class="o">+</span><span class="n">d</span><span class="p">)</span> <span class="n">Contents</span> <span class="n">of</span> <span class="n">memory</span> <span class="n">location</span> <span class="n">offset</span> <span class="n">by</span> <span class="n">d</span> <span class="n">words</span> <span class="kn">from</span> <span class="nn">the</span> <span class="n">opcode</span>
+</pre></div>
+</div>
+<div class="section" id="instruction-definitions">
+<h3>Instruction Definitions<a class="headerlink" href="#instruction-definitions" title="Permalink to this headline">¶</a></h3>
 <span class="target" id="module-F100_Opcodes.OpcodeF9"></span><div class="section" id="add-add-with-carry">
-<h2>ADD - Add (With Carry)<a class="headerlink" href="#add-add-with-carry" title="Permalink to this headline">¶</a></h2>
+<h4>ADD - Add (With Carry)<a class="headerlink" href="#add-add-with-carry" title="Permalink to this headline">¶</a></h4>
 <p>Perform addition of the accumulator and an operand with the result being stored in
 the accumulator.</p>
 <p>When the multi-length &#8216;M&#8217; flag is set, the carry bit from a previous operation is
@@ -195,7 +298,7 @@ included in the addition.</p>
 </ul>
 </div>
 <span class="target" id="module-F100_Opcodes.OpcodeF5"></span><div class="section" id="ads-add-with-carry-store-to-memory">
-<h2>ADS - Add (With Carry), Store to Memory<a class="headerlink" href="#ads-add-with-carry-store-to-memory" title="Permalink to this headline">¶</a></h2>
+<h4>ADS - Add (With Carry), Store to Memory<a class="headerlink" href="#ads-add-with-carry-store-to-memory" title="Permalink to this headline">¶</a></h4>
 <p>Perform addition of the accumulator and an operand with the result being stored in
 the operand&#8217;s original location.</p>
 <p>When the multi-length &#8216;M&#8217; flag is set, the carry bit from a previous operation is
@@ -351,7 +454,7 @@ after the opcode, and the the result is returned to that location.</p>
 </ul>
 </div>
 <span class="target" id="module-F100_Opcodes.OpcodeF12"></span><div class="section" id="and-logical-and">
-<h2>AND - Logical AND<a class="headerlink" href="#and-logical-and" title="Permalink to this headline">¶</a></h2>
+<h4>AND - Logical AND<a class="headerlink" href="#and-logical-and" title="Permalink to this headline">¶</a></h4>
 <p>Perform a bitwise logical AND of accumulator with the specified operand.</p>
 <p><strong>Function</strong></p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">AND</span> <span class="n">N</span>      <span class="n">A</span> <span class="o">&lt;-</span> <span class="n">A</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">N</span><span class="p">)</span>
@@ -486,7 +589,7 @@ after the opcode, and the the result is returned to that location.</p>
 </ul>
 </div>
 <span class="target" id="module-F100_Opcodes.OpcodeF2"></span><div class="section" id="cal-call-subroutine">
-<h2>CAL - Call Subroutine<a class="headerlink" href="#cal-call-subroutine" title="Permalink to this headline">¶</a></h2>
+<h4>CAL - Call Subroutine<a class="headerlink" href="#cal-call-subroutine" title="Permalink to this headline">¶</a></h4>
 <p>Jump to subroutine location provided by operand, storing return address in the link stack</p>
 <p><strong>Function</strong></p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">CAL</span> <span class="n">N</span>   <span class="p">(</span><span class="n">LSP</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">&lt;-</span> <span class="n">PC</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span> <span class="p">(</span><span class="n">LSP</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span> <span class="o">&lt;-</span> <span class="n">CR</span> <span class="p">;</span> <span class="n">PC</span> <span class="o">&lt;-</span> <span class="n">N</span><span class="p">;</span> <span class="n">LSP</span> <span class="o">&lt;-</span> <span class="n">LSP</span><span class="o">+</span><span class="mi">2</span>
@@ -596,7 +699,7 @@ treated as the next instruction. In this form the assembler discards the provide
 </ul>
 </div>
 <span class="target" id="module-F100_Opcodes.OpcodeF0_Bit"></span><div class="section" id="clr-set-bit-manipulation">
-<h2>CLR, SET - Bit manipulation<a class="headerlink" href="#clr-set-bit-manipulation" title="Permalink to this headline">¶</a></h2>
+<h4>CLR, SET - Bit manipulation<a class="headerlink" href="#clr-set-bit-manipulation" title="Permalink to this headline">¶</a></h4>
 <p>Clear or set a single bit within the operand.</p>
 <p><strong>Function</strong></p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">CLR</span> <span class="n">B</span> <span class="n">A</span>   <span class="n">A</span><span class="p">[</span><span class="n">B</span><span class="p">]</span> <span class="o">&lt;-</span> <span class="mi">0</span>
@@ -734,7 +837,7 @@ affected by these instructions.</li>
 </ul>
 </div>
 <span class="target" id="module-F100_Opcodes.OpcodeF11"></span><div class="section" id="cmp-compare">
-<h2>CMP - Compare<a class="headerlink" href="#cmp-compare" title="Permalink to this headline">¶</a></h2>
+<h4>CMP - Compare<a class="headerlink" href="#cmp-compare" title="Permalink to this headline">¶</a></h4>
 <p>Perform either a single or multi-length comparison of the accumulator and an operand,
 depending on the state of the multi-length flag &#8216;M&#8217; in the condition register.</p>
 <p>When M is set, a sequence of these instructions performs a multi-length subtraction
@@ -894,7 +997,7 @@ a number with the same sign as the subtrahend, otherwise cleared</li>
 </ul>
 </div>
 <span class="target" id="module-F100_Opcodes.OpcodeF0_Halt"></span><div class="section" id="halt-stop-processor-execution">
-<h2>HALT - Stop Processor Execution<a class="headerlink" href="#halt-stop-processor-execution" title="Permalink to this headline">¶</a></h2>
+<h4>HALT - Stop Processor Execution<a class="headerlink" href="#halt-stop-processor-execution" title="Permalink to this headline">¶</a></h4>
 <p>This instruction stops the CPU and prevents the F100-L from executing any further instructions.</p>
 <p>Once stopped the CPU can only be restarted by driving the RUN* pin high (the &#8216;STOP&#8217; state) and then
 low again.</p>
@@ -968,7 +1071,7 @@ with or without an operand and in the latter case the 10 LSBs will be encoded in
 </div></blockquote>
 </div>
 <span class="target" id="module-F100_Opcodes.OpcodeF7"></span><div class="section" id="icz-increment-and-jump-if-non-zero">
-<h2>ICZ - Increment and Jump if Non-Zero<a class="headerlink" href="#icz-increment-and-jump-if-non-zero" title="Permalink to this headline">¶</a></h2>
+<h4>ICZ - Increment and Jump if Non-Zero<a class="headerlink" href="#icz-increment-and-jump-if-non-zero" title="Permalink to this headline">¶</a></h4>
 <p>Increment the contents of a counter or address and jump to a specified location if the result is non-zero</p>
 <p><strong>Function</strong></p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">ICZ</span> <span class="n">N</span>   <span class="n">W1</span>  <span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="o">&lt;-</span> <span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span> <span class="p">;</span> <span class="k">if</span> <span class="p">(</span><span class="n">Z</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span> <span class="n">PC</span> <span class="o">&lt;-</span> <span class="n">W1</span>
@@ -1109,7 +1212,7 @@ with or without an operand and in the latter case the 10 LSBs will be encoded in
 </ul>
 </div>
 <span class="target" id="module-F100_Opcodes.OpcodeF0_Jump"></span><div class="section" id="jbc-jbs-jcs-jsc-conditional-jump">
-<h2>JBC, JBS, JCS, JSC - Conditional Jump<a class="headerlink" href="#jbc-jbs-jcs-jsc-conditional-jump" title="Permalink to this headline">¶</a></h2>
+<h4>JBC, JBS, JCS, JSC - Conditional Jump<a class="headerlink" href="#jbc-jbs-jcs-jsc-conditional-jump" title="Permalink to this headline">¶</a></h4>
 <p>These instructions inspect a bit field in the first operand and if the expected condition is satisfied jump to the location specified in the second operand.</p>
 <ul class="simple">
 <li>JBC (Jump bit clear) will jump to the specified destination if the inspected bit is clear (0).<ul>
@@ -1358,7 +1461,7 @@ with or without an operand and in the latter case the 10 LSBs will be encoded in
 </ul>
 </div>
 <span class="target" id="module-F100_Opcodes.OpcodeF15"></span><div class="section" id="jmp-unconditional-jump">
-<h2>JMP - Unconditional Jump<a class="headerlink" href="#jmp-unconditional-jump" title="Permalink to this headline">¶</a></h2>
+<h4>JMP - Unconditional Jump<a class="headerlink" href="#jmp-unconditional-jump" title="Permalink to this headline">¶</a></h4>
 <p>Unconditional jump to the location provided by the operand.</p>
 <p><strong>Function</strong></p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JMP</span> <span class="n">N</span>      <span class="n">PC</span> <span class="o">&lt;-</span> <span class="n">N</span>
@@ -1486,7 +1589,7 @@ with or without an operand and in the latter case the 10 LSBs will be encoded in
 </ul>
 </div>
 <span class="target" id="module-F100_Opcodes.OpcodeF8"></span><div class="section" id="lda-load-accumulator-from-memory">
-<h2>LDA - Load Accumulator from Memory<a class="headerlink" href="#lda-load-accumulator-from-memory" title="Permalink to this headline">¶</a></h2>
+<h4>LDA - Load Accumulator from Memory<a class="headerlink" href="#lda-load-accumulator-from-memory" title="Permalink to this headline">¶</a></h4>
 <p>Load the accumulator with a value from the specified memory location</p>
 <p><strong>Function</strong></p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">LDA</span> <span class="n">N</span>      <span class="n">A</span> <span class="o">&lt;-</span> <span class="p">(</span><span class="n">N</span><span class="p">)</span>
@@ -1620,7 +1723,7 @@ with or without an operand and in the latter case the 10 LSBs will be encoded in
 </ul>
 </div>
 <span class="target" id="module-F100_Opcodes.OpcodeF13"></span><div class="section" id="neq-logical-xor">
-<h2>NEQ - Logical XOR<a class="headerlink" href="#neq-logical-xor" title="Permalink to this headline">¶</a></h2>
+<h4>NEQ - Logical XOR<a class="headerlink" href="#neq-logical-xor" title="Permalink to this headline">¶</a></h4>
 <p>Perform a bitwise logical exclusive-OR of the Accumulator and specified operand.</p>
 <p><strong>Function</strong></p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">NEQ</span> <span class="n">N</span>      <span class="n">A</span> <span class="o">&lt;-</span> <span class="n">A</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">N</span><span class="p">)</span>
@@ -1755,7 +1858,7 @@ with or without an operand and in the latter case the 10 LSBs will be encoded in
 </ul>
 </div>
 <span class="target" id="module-F100_Opcodes.OpcodeF3"></span><div class="section" id="rtn-rtc-return-from-subroutine">
-<h2>RTN, RTC - Return from Subroutine<a class="headerlink" href="#rtn-rtc-return-from-subroutine" title="Permalink to this headline">¶</a></h2>
+<h4>RTN, RTC - Return from Subroutine<a class="headerlink" href="#rtn-rtc-return-from-subroutine" title="Permalink to this headline">¶</a></h4>
 <p>These instructions perform a return from subroutine operation.</p>
 <p><strong>RTN</strong> restores bits 0-5 of the Condition Register from the word pointed to by the link stack pointer
 (location 0). The link stack pointer is then decremented to point to the return address, and this
@@ -1874,7 +1977,7 @@ the instruction pointing to the last valid stack entry.</p>
 </ul>
 </div>
 <span class="target" id="module-F100_Opcodes.OpcodeF6"></span><div class="section" id="sbs-subtract-with-carry-store-to-memory">
-<h2>SBS - Subtract (With Carry), Store to Memory<a class="headerlink" href="#sbs-subtract-with-carry-store-to-memory" title="Permalink to this headline">¶</a></h2>
+<h4>SBS - Subtract (With Carry), Store to Memory<a class="headerlink" href="#sbs-subtract-with-carry-store-to-memory" title="Permalink to this headline">¶</a></h4>
 <p>Perform substraction of the accumulator from the value of an operand with the 
 result being stored in the operand&#8217;s original location.</p>
 <p>When the multi-length &#8216;M&#8217; flag is set, the carry bit from a previous operation is 
@@ -2032,7 +2135,7 @@ a number with the same sign as the subtrahend, otherwise cleared</li>
 </ul>
 </div>
 <span class="target" id="module-F100_Opcodes.OpcodeF1"></span><div class="section" id="sjm-switch-jump">
-<h2>SJM - Switch Jump<a class="headerlink" href="#sjm-switch-jump" title="Permalink to this headline">¶</a></h2>
+<h4>SJM - Switch Jump<a class="headerlink" href="#sjm-switch-jump" title="Permalink to this headline">¶</a></h4>
 <p>The contents of the accumulator are added to the contents of the program counter (which has
 already been incremented to point to the next instruction). If the value of the accumulator
 is zero then the program will continue execution in sequence.</p>
@@ -2100,7 +2203,7 @@ never exceed the 15b address range of the machine.</p>
 </ul>
 </div>
 <span class="target" id="module-F100_Opcodes.OpcodeF0_Shift"></span><div class="section" id="sla-sle-sll-sra-sre-srl-shift-and-rotation">
-<h2>SLA,SLE,SLL,SRA,SRE,SRL - Shift and Rotation<a class="headerlink" href="#sla-sle-sll-sra-sre-srl-shift-and-rotation" title="Permalink to this headline">¶</a></h2>
+<h4>SLA,SLE,SLL,SRA,SRE,SRL - Shift and Rotation<a class="headerlink" href="#sla-sle-sll-sra-sre-srl-shift-and-rotation" title="Permalink to this headline">¶</a></h4>
 <p>These instructions perform single or multi-length shifts and rotations of a specified register or memory location.</p>
 <p>Several different types of shift are available</p>
 <ul class="simple">
@@ -2140,7 +2243,7 @@ never exceed the 15b address range of the machine.</p>
 <p>Any shifts where the Condition Register itself is to be shifted will treat that register as a bit
 pattern and all bits will be left in the shifted state at the end of the instruction.</p>
 <div class="section" id="single-length-shifts">
-<h3>Single Length Shifts<a class="headerlink" href="#single-length-shifts" title="Permalink to this headline">¶</a></h3>
+<h5>Single Length Shifts<a class="headerlink" href="#single-length-shifts" title="Permalink to this headline">¶</a></h5>
 <p>When &#8216;M&#8217; is clear the bottom 4 LSBs of the Opcode word determine the number of places, n,  to shift, ie 0&lt;=n&lt;=15.</p>
 <p>In single length operation the data to be shifted can be one of</p>
 <ul class="simple">
@@ -2378,7 +2481,7 @@ pattern and all bits will be left in the shifted state at the end of the instruc
 </div></blockquote>
 </div>
 <div class="section" id="single-length-rotations">
-<h3>Single Length Rotations<a class="headerlink" href="#single-length-rotations" title="Permalink to this headline">¶</a></h3>
+<h5>Single Length Rotations<a class="headerlink" href="#single-length-rotations" title="Permalink to this headline">¶</a></h5>
 <p><strong>Function</strong></p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SLE</span>  <span class="n">B</span> <span class="n">A</span>      <span class="n">A</span> <span class="o">&lt;-</span> <span class="n">_rotl</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
 <span class="n">SLE</span>  <span class="n">B</span> <span class="n">CR</span>     <span class="n">CR</span> <span class="o">&lt;-</span> <span class="n">_rotl</span><span class="p">(</span><span class="n">CR</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
@@ -2518,7 +2621,7 @@ pattern and all bits will be left in the shifted state at the end of the instruc
 </div></blockquote>
 </div>
 <div class="section" id="double-length-shifts">
-<h3>Double Length Shifts<a class="headerlink" href="#double-length-shifts" title="Permalink to this headline">¶</a></h3>
+<h5>Double Length Shifts<a class="headerlink" href="#double-length-shifts" title="Permalink to this headline">¶</a></h5>
 <p>When &#8216;M&#8217; is set, a double length operation is performed on a 32-bit word which is made up of the Accumulator
 in the 16 MSBs and the internal Operand Register providing the lower 16 bits. The contents of the Operand
 Register are dependent on the previous instruction.</p>
@@ -2674,7 +2777,7 @@ correct state before executing either a single or double length operation.</p>
 </div>
 </div>
 <span class="target" id="module-F100_Opcodes.OpcodeF4"></span><div class="section" id="sto-store-accumulator-to-memory">
-<h2>STO - Store Accumulator to Memory<a class="headerlink" href="#sto-store-accumulator-to-memory" title="Permalink to this headline">¶</a></h2>
+<h4>STO - Store Accumulator to Memory<a class="headerlink" href="#sto-store-accumulator-to-memory" title="Permalink to this headline">¶</a></h4>
 <p>Store the value in the accumulator to the specified memory location</p>
 <p><strong>Function</strong></p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">STO</span> <span class="n">N</span>      <span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="o">&lt;-</span> <span class="n">A</span>
@@ -2808,7 +2911,7 @@ correct state before executing either a single or double length operation.</p>
 </ul>
 </div>
 <span class="target" id="module-F100_Opcodes.OpcodeF10"></span><div class="section" id="sub-subtract-with-carry">
-<h2>SUB - Subtract (With Carry)<a class="headerlink" href="#sub-subtract-with-carry" title="Permalink to this headline">¶</a></h2>
+<h4>SUB - Subtract (With Carry)<a class="headerlink" href="#sub-subtract-with-carry" title="Permalink to this headline">¶</a></h4>
 <p>Perform either a single or multi length substraction of the accumulator from the value of
 a provided operand depending on the state of the multi-length flag &#8216;M&#8217; in the condition
 register.</p>
@@ -2962,6 +3065,8 @@ a number with the same sign as the subtrahend, otherwise cleared</li>
 </ul>
 </div>
 </div>
+</div>
+</div>
 
 
           </div>
@@ -2971,7 +3076,11 @@ a number with the same sign as the subtrahend, otherwise cleared</li>
         <div class="sphinxsidebarwrapper">
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">F100-L Instruction Set</a><ul>
+<li><a class="reference internal" href="#">The F100-L Instruction Set</a><ul>
+<li><a class="reference internal" href="#instruction-encoding">Instruction Encoding</a></li>
+<li><a class="reference internal" href="#instruction-timings">Instruction Timings</a></li>
+<li><a class="reference internal" href="#abbrieviations">Abbrieviations</a><ul>
+<li><a class="reference internal" href="#instruction-definitions">Instruction Definitions</a><ul>
 <li><a class="reference internal" href="#add-add-with-carry">ADD - Add (With Carry)</a></li>
 <li><a class="reference internal" href="#ads-add-with-carry-store-to-memory">ADS - Add (With Carry), Store to Memory</a></li>
 <li><a class="reference internal" href="#and-logical-and">AND - Logical AND</a></li>
@@ -2998,17 +3107,23 @@ a number with the same sign as the subtrahend, otherwise cleared</li>
 </ul>
 </li>
 </ul>
+</li>
+</ul>
+</li>
+</ul>
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="F100Arch.html" title="previous chapter">F100-L Microprocessor Architecture</a></li>
+      <li>Next: <a href="F100Asm.html" title="next chapter">The F100-L Assembler</a></li>
   </ul></li>
 </ul>
 </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/doc/F100_Opcodes.txt"
+      <li><a href="../_sources/doc/F100InstrSet.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -3034,7 +3149,7 @@ a number with the same sign as the subtrahend, otherwise cleared</li>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
       
       |
-      <a href="../_sources/doc/F100_Opcodes.txt"
+      <a href="../_sources/doc/F100InstrSet.txt"
           rel="nofollow">Page source</a>
     </div>
 
